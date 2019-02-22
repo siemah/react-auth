@@ -1,9 +1,18 @@
-import React from 'react'
+import React from 'react';
+import LoginForm from '../forms/LoginForm';
 
-export default function LoginPage() {
-  return (
-    <div>
-      <h1>Login Pages</h1>
-    </div>
-  )
+export default class LoginPage extends React.Component {
+  
+  submit = data => {
+    console.log(data);
+  }
+  
+  render() {
+    return (
+      <div>
+        <h1>Login Pages</h1>
+        <LoginForm submit={this.submit} />
+      </div>
+    )
+  }
 }
