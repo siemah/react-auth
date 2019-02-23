@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Button } from 'semantic-ui-react';
+import { Form, Button, Message } from 'semantic-ui-react';
 import Validator from 'validator';
 import PropTypes from 'prop-types';
 
@@ -28,8 +28,11 @@ export default class LoginForm extends Component {
     let { data } = this.state;
     let errors = this.validate(data);
     this.setState({errors});
-    if( Object.keys(errors).length === 0 ) 
-      this.props.submit(data);
+    if( Object.keys(errors).length === 0 ) {
+      this.setState({ loading: true, });
+      this.props.submit(data)
+        .catch(err => this.setState({ errors: err.response.data.errors, loading: false}));
+    } 
   }
 
   validate = data => {
@@ -40,9 +43,15 @@ export default class LoginForm extends Component {
   }
 
   render() {
-    let { data, errors } = this.state;
+    let { data, errors, loading } = this.state;
     return (
-      <Form onSubmit={this.onSubmit}>
+      <Form onSubmit={this.onSubmit} loading={loading}>
+        {
+          errors.global && <Message negative>
+            <Message.Header>Something went wrong</Message.Header>
+            <p>{ errors.global }</p>
+          </Message>
+        }
         <Form.Field error={!!errors.email}>
           <label htmlFor='email'>Email</label>
           <input 
