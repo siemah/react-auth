@@ -43,7 +43,7 @@ export default class LoginForm extends Component {
     let { data, errors } = this.state;
     return (
       <Form onSubmit={this.onSubmit}>
-        <Form.Field>
+        <Form.Field error={!!errors.email}>
           <label htmlFor='email'>Email</label>
           <input 
             type='email' 
@@ -54,7 +54,7 @@ export default class LoginForm extends Component {
             onChange={this.onChange} />
           {errors.email && <InlineError message={errors.email} />}
         </Form.Field>
-        <Form.Field>
+        <Form.Field error={!!errors.password}>
           <label htmlFor='password'>Password</label>
           <input
             type='password'
