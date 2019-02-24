@@ -1,16 +1,24 @@
 import express from 'express';
 import path from 'path';
+import mongoose from 'mongoose';
+import bodyParser from 'body-parser';
+
+import auth from './routes/auth'
 
 const app = express();
+app.use(bodyParser.json());
+mongoose.connect(
+  'mongodb://localhost:27017/reactNodeAuth',
+  { 
+    useNewUrlParser: true,
+    useCreateIndex: true,
+  }
+);
 
-app.post('/api/auth', (req, res)=>{
-  res.status(400).json({
-    errors: {global: 'Invalid credentials'}
-  });
-});
+app.use('/api/auth', auth);
 
 app.get('/*', (req, res) => {
     res.sendFile( path.join(__dirname, 'index.html'));
 });
 
-app.listen(8888, () => console.log('runing at port 8888'))
+app.listen(4444, () => console.log('runing at port 4444'))
