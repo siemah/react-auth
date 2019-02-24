@@ -2,13 +2,18 @@ import express from 'express';
 import path from 'path';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
+import dotenv from 'dotenv';
 
 import auth from './routes/auth'
 
 const app = express();
+
 app.use(bodyParser.json());
+
+dotenv.config();
+
 mongoose.connect(
-  'mongodb://localhost:27017/reactNodeAuth',
+  process.env.DB_URL,
   { 
     useNewUrlParser: true,
     useCreateIndex: true,

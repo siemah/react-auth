@@ -10,9 +10,9 @@ Router
     (req, res) => {
       let { credentials } = req.body;
       User.findOne({ email: credentials.email }).then(user => {
-        console.log(user)
+        //console.log(user)
         if(user && user.validePassword(credentials.password)){
-          res.json({ user: { email: user.email } });
+          res.json({ user: user.toAuthJSON() });
         } else {
           res.status(400).json({ errors: { global: 'Invalide credentials' } });
         }
