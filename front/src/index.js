@@ -9,6 +9,7 @@ import 'semantic-ui-css/semantic.min.css'
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import rootReducer from './rootReducer';
+import { userLoggedIn } from './actions/auth';
 
 const store = createStore(
   rootReducer,
@@ -17,6 +18,15 @@ const store = createStore(
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   )
 );
+
+/**
+ * check is user is logged before then dispatch 
+ * a userLoggedIn action
+ */
+if( localStorage.jwt ) {
+  let user = { token: localStorage.jwt };
+  store.dispatch( userLoggedIn( user ) );
+}
 
 ReactDOM.render(
     <BrowserRouter>
