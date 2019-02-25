@@ -3,13 +3,15 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types'
 
-const HomePage = ({ isAuthenticated }) => {
+import { logout } from '../../actions/auth';
+
+const HomePage = ({ isAuthenticated, logout }) => {
   return (
     <div>
       <h1>Home page</h1>
       { 
         isAuthenticated ?
-          <button >logout</button> :
+          <button onClick={logout}>logout</button> :
           <Link to='/login'>Login</Link>
       }
     </div>
@@ -17,13 +19,14 @@ const HomePage = ({ isAuthenticated }) => {
 }
 
 HomePage.propTypes = {
-  isAutheenticated: PropTypes.bool
+  isAutheenticated: PropTypes.bool,
+  logout: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => {
   return {
-    isAuthenticated: !!state.user.token
+    isAuthenticated: !!state.user.token,
   }
 };
 
-export default connect(mapStateToProps)(HomePage);
+export default connect(mapStateToProps, { logout })(HomePage);
