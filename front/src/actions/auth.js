@@ -13,7 +13,7 @@ export const login = credentials => dispatch =>
   api.user.login(credentials).then(user => {
     localStorage.jwt = user.token;
     dispatch(userLoggedIn(user));
-  }) 
+  })
 
 export const logout = () => dispatch => {
   delete localStorage.jwt;

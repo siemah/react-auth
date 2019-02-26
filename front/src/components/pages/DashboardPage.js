@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import ConfirmedMessage from '../messages/ConfirmedMessage';
 import { Link } from 'react-router-dom';
 
-const DashboardPage = ({ isConfirmed }) => {
+const DashboardPage = ({ confirmed }) => {
   return (
     <div>
       {
-        !isConfirmed && <ConfirmedMessage />
+        !confirmed && <ConfirmedMessage />
       }
       <Link to='/'>Home</Link>
     </div>
@@ -16,12 +16,12 @@ const DashboardPage = ({ isConfirmed }) => {
 }
 
 DashboardPage.prototype = {
-  isConfirmed: PropTypes.bool.isRequired,
+  confirmed: PropTypes.bool.isRequired,
 }
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    isConfirmed: !!state.user.isConfirmed
+    confirmed: !!state.user.confirmed
   }
 }
 

@@ -1,13 +1,13 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import JWT from 'jsonwebtoken'
+import uniqueValidator from 'mongoose-unique-validator';
 
 let UserSchema = new mongoose.Schema({
-  email: { type: String, index: true, required: true, lowercase: true, },
-  password: {type: String, required: true, }
-}, {
-  timestamps: true
-});
+  email: { type: String, index: true, required: true, lowercase: true, unique: true, },
+  password: {type: String, required: true, },
+  confirmed: { type: Boolean, default: false, },
+}, { timestamps: true });
 
 
 /**
@@ -25,7 +25,8 @@ UserSchema.methods.generateJWT = function() {
 UserSchema.methods.toAuthJSON = function () {
   return {
     email: this.email,
-    token: this.generateJWT()
+    token: this.generateJWT(),
+    confirmed: this.confirmed,
   }
 }
 
@@ -37,5 +38,16 @@ UserSchema.methods.toAuthJSON = function () {
 UserSchema.methods.validePassword = function(password) {
   return bcrypt.compareSync(password, this.password);
 }
+
+/**
+ * hash a password of the current user
+ * @param {String} the password string send by user 
+ */
+UserSchema.methods.setPassword = function (password) {
+  this.password = bcrypt.hashSync(password, 10);
+}
+
+// add unique validato plugin 
+UserSchema.plugin(uniqueValidator, { message: 'This email is already taken :(' });
 
 export default mongoose.model('User', UserSchema);

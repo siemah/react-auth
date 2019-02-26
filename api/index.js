@@ -4,7 +4,8 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 
-import auth from './routes/auth'
+import auth from './routes/auth';
+import user from './routes/user';
 
 const app = express();
 
@@ -21,6 +22,7 @@ mongoose.connect(
 );
 
 app.use('/api/auth', auth);
+app.use('/api/users', user);
 
 app.get('/*', (req, res) => {
     res.sendFile( path.join(__dirname, 'index.html'));
