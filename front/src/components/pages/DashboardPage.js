@@ -1,10 +1,28 @@
-import React from 'react'
+import React from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import ConfirmedMessage from '../messages/ConfirmedMessage';
+import { Link } from 'react-router-dom';
 
-export default function DashboardPage() {
+const DashboardPage = ({ isConfirmed }) => {
   return (
     <div>
-      <h1>Dashboard</h1>
-      <a href='#1'>logout</a>
+      {
+        !isConfirmed && <ConfirmedMessage />
+      }
+      <Link to='/'>Home</Link>
     </div>
   )
 }
+
+DashboardPage.prototype = {
+  isConfirmed: PropTypes.bool.isRequired,
+}
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    isConfirmed: !!state.user.isConfirmed
+  }
+}
+
+export default connect(mapStateToProps)(DashboardPage);
