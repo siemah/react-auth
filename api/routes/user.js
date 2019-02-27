@@ -2,6 +2,7 @@ import express from 'express';
 import User from '../models/user';
 
 import parseErrors from '../utils/parseErrors'
+import Mail from '../mailer/mail'
 
 let Router = express.Router();
 
@@ -11,8 +12,23 @@ Router.post(
     let { user } = req.body;
     let newUser = new User({ email: user.email });
     newUser.setPassword(user.password);
+    newUser.setConfirmationToken();
     newUser.save()
-      .then(userDoc => res.status(201).json({ user: userDoc.toAuthJSON() }))
+      .then(userDoc =>{
+        let mailOptions = {
+          from: `"No Reply 👻" <${process.env.MAIL_FROM_ADDRESS}>`, // sender address
+          to: userDoc.email, // list of receivers
+          subject: "Confirmation your accout ✔", // Subject line
+          text: `Copy and paste this link to browser to valide you account 
+          ${process.env.APP_URL}/confirmation/${userDoc.confirmationToken}`, // plain text body
+          html: `Follow this link to browser to valide you account 
+          <a href='${process.env.APP_URL}/confirmation/${userDoc.confirmationToken}'> click here </a>` // html body
+        };
+        Mail.send(mailOptions, (err, info) => {
+          if(err) res.status(400).json({ errors: { global: 'Oops, something went try again after a few moment :('} });
+          return res.status(201).json({ user: userDoc.toAuthJSON() });
+        });
+      })
       .catch(err => {
         let errors = parseErrors(err.errors);
         res.status(400).json({ errors });

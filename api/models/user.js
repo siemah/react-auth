@@ -7,6 +7,7 @@ let UserSchema = new mongoose.Schema({
   email: { type: String, index: true, required: true, lowercase: true, unique: true, },
   password: {type: String, required: true, },
   confirmed: { type: Boolean, default: false, },
+  confirmationToken: { type: String, required: true, },
 }, { timestamps: true });
 
 
@@ -15,7 +16,13 @@ let UserSchema = new mongoose.Schema({
  * @return {String} token 
  */
 UserSchema.methods.generateJWT = function() {
-  return JWT.sign({ email: this.email }, process.env.JWT_SECRET);
+  return JWT.sign(
+    { 
+      email: this.email, 
+      confirmed: this.confirmed 
+    }, 
+    process.env.JWT_SECRET
+  );
 }
 
 /**
@@ -46,6 +53,14 @@ UserSchema.methods.validePassword = function(password) {
 UserSchema.methods.setPassword = function (password) {
   this.password = bcrypt.hashSync(password, 10);
 }
+
+/**
+ * generate a confirmation token and add it to user modela
+ */
+UserSchema.methods.setConfirmationToken = function () {
+  this.confirmationToken = this.generateJWT();
+}
+
 
 // add unique validato plugin 
 UserSchema.plugin(uniqueValidator, { message: 'This email is already taken :(' });
