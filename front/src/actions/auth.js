@@ -19,3 +19,10 @@ export const logout = () => dispatch => {
   delete localStorage.jwt;
   dispatch(userLoggedOut());
 }
+
+
+export const confirm = (token) => dispatch =>
+  api.user.confirm(token).then(user => {
+    localStorage.jwt = user.token;
+    dispatch(userLoggedIn(user));
+  })

@@ -15,7 +15,7 @@ const DashboardPage = ({ confirmed }) => {
   )
 }
 
-DashboardPage.prototype = {
+DashboardPage.propTypes = {
   confirmed: PropTypes.bool.isRequired,
 }
 
