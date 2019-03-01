@@ -20,6 +20,7 @@ mongoose.connect(
     useCreateIndex: true,
   }
 );
+mongoose.set('useFindAndModify', false);
 
 app.use('/api/auth', auth);
 app.use('/api/users', user);

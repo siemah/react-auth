@@ -8,7 +8,10 @@ import SignupForm from '../forms/SignupForm';
 class SignupPage extends React.Component {
 
   submit = data =>
-    this.props.signup(data).then(() => this.props.history.push("/dashboard"));
+    this.props.signup(data).then((r) =>{
+      console.log(r)
+      this.props.history.push("/dashboard")
+    });
 
 
   render() {

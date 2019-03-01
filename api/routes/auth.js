@@ -19,5 +19,30 @@ Router
       })
     }
   )
+  .post(
+    '/confirmation',
+    async (req, res) => {
+      
+      let { body } = req;
+      if( !'token' in body ) return res.status(401).json({ errors: { global: "Token should not be empty :(" }});
+      try {
+        let user = await User.findOne({ confirmationToken: body.token, confirmed: false });
+        if (!user) return res.status(401).json({ errors: { global: "Invalid Token :(" } });
+        user = await User.findOneAndUpdate(
+          { confirmationToken: body.token, confirmed: false },
+          {
+            confirmationToken: '',
+            confirmed: true,
+          },
+          { new: true }
+        );
+        if (user) return res.status(201).json({ user: user.toAuthJSON() });
+        return res.status(400).json({ errors: { global: "Oop's Something went wrong try again" } });
+      } catch (error) {
+        return res.status(400).json({ errors: { global: "Oop's Something went wrop, try again or contact webmaster" } });
+      }
+
+    }
+  )
 
 export default Router;

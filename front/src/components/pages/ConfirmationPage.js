@@ -4,27 +4,29 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { confirm } from '../../actions/user';
+import { confirm } from '../../actions/auth';
 
 class ConfirmationPage extends Component {
 
   state = {
     loading: true,
     success: false,
+    response: null,
   }
 
   componentDidMount = () => {
     // send a request to backend for account validation
     this.props.confirm(this.props.match.params.token)
-      .then((res) => {
+      .then((user) => {
+        console.table(user)
         this.setState({ success: true, loading: false })
       }).catch((err) => {
-        this.setState({ success: false, loading: false })  
+        this.setState({ success: false, loading: false, response: err.response.data.errors.global || 'Invalid token' })  
       });
   }
 
   render() {
-    let { loading, success } = this.state;
+    let { loading, success, response } = this.state;
     return ( 
       <div>
         {
@@ -43,7 +45,7 @@ class ConfirmationPage extends Component {
         {
           !loading && !success && <Message icon>
             <Icon name="close" />
-            <Message.Header>Your token is invalide</Message.Header>
+            <Message.Header>{ response }</Message.Header>
           </Message>
         }
       </div>
